@@ -1,9 +1,10 @@
 const BaseController = require("./baseController");
 
 class UserController extends BaseController {
-  constructor(model, items) {
-    super(model);
-    this.items = items;
+  constructor({ users, db }) {
+    super(users);
+    this.items = db.items;
+    this.categories = db.categories;
   }
 
   userTest(req, res) {
@@ -41,15 +42,30 @@ class UserController extends BaseController {
   getUsersItems = async (req, res) => {
     const { id } = req.params;
     try {
+      // Eager Loading (true join statement)
       const data = await this.model.findOne({
         where: { id },
-        // include: {
-        //   model: this.items,
-        // },
+        include: {
+          model: this.items,
+          include: {
+            model: this.categories,
+            where: {id: 5}
+          },
+        },
       });
-      const items = await data.getItems()
-      return res.json({ success: true, data, items });
 
+      // Lazy Loading (2 seperate statements)
+      const data2 = await this.model.findOne({
+        where: { id },
+      });
+      const items = await data2.getItems(); // SELECT FROM items WHERE user_id = {data2.id}
+
+      return res.json({
+        success: true,
+        eager: data,
+        lazyUser: data2,
+        lazyItems: items,
+      });
     } catch (err) {
       return res.status(400).json({ success: false, msg: err });
     }

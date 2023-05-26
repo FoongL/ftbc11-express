@@ -14,12 +14,12 @@ module.exports = {
     */
 
      await queryInterface.bulkInsert('users', [{
-      email: 'foong@foong.com',
+      email: 'foong3@foong.com',
       password: 'password123',
       updated_at: new Date(),
       created_at: new Date()
      },{
-      email: 'Searn@sean.com',
+      email: 'Sean3@sean.com',
       password: 'password123',
       name:'Reuben',
       updated_at: new Date(),

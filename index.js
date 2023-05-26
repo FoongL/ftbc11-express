@@ -20,7 +20,7 @@ require("dotenv").config();
 
 // import database
 const db = require("./db/models");
-const { users, items } = db;
+const { users, items, categories } = db;
 
 //import controllers
 const BaseController = require("./controllers/baseController.js");
@@ -28,8 +28,8 @@ const UserController = require("./controllers/userController");
 const ItemController = require("./controllers/itemController");
 
 // initialize controllers
-const userController = new UserController(users, items);
-const itemController = new ItemController(items);
+const userController = new UserController({users, db});
+const itemController = new ItemController({items, db});
 
 // import routers
 const UserRouter = require("./routers/userRouter.js");
