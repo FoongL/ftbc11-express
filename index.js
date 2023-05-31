@@ -1,6 +1,8 @@
 // require Express NPM library
 const express = require("express");
 const cors = require("cors");
+
+
 // initialize dotenv
 require("dotenv").config();
 // // import and set up PG
@@ -18,9 +20,14 @@ require("dotenv").config();
 
 // console.log('pool in index:', pool)
 
+
 // import database
 const db = require("./db/models");
 const { users, items, categories } = db;
+
+// import middlewares
+const basicAuth = require('./middlewares/basicAuth')(users)
+const jwtAuth = require('./middlewares/jwtAuth')
 
 //import controllers
 const BaseController = require("./controllers/baseController.js");
@@ -36,8 +43,10 @@ const UserRouter = require("./routers/userRouter.js");
 const ItemRouter = require("./routers/itemRouter");
 
 // initialize routers
-const userRouter = new UserRouter(userController);
+const userRouter = new UserRouter(userController, jwtAuth);
 const itemRouter = new ItemRouter(itemController);
+
+
 
 // Declare the port to listen to and initialise Express
 const app = express();
@@ -54,6 +63,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/users", userRouter.routes());
 app.use("/items", itemRouter.routes());
+
+app.get('/basicTest', basicAuth, (req,res)=> res.json({msg: 'YOU GOT ME!'}))
+app.get('/jwtTest', jwtAuth, (req,res)=> res.json({msg: 'YOU GOT ME!'}))
 
 const PORT = process.env.PORT;
 // Start the server

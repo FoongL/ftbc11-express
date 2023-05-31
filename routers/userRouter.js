@@ -3,8 +3,9 @@ const router = express.Router()
 
 
 class UserRouter{
-    constructor(controller){
+    constructor(controller, jwtAuth){
         this.controller = controller
+        this.auth = jwtAuth
     }
 
     routes=()=>{
@@ -14,7 +15,9 @@ class UserRouter{
         router.get('/all', this.controller.getAllUsers)
         //router.post('/getOne', this.controller.getUser)
         router.post('/newUser', this.controller.insertUser)
+        router.post('/signin', this.controller.signin)
         router.get('/userItems/:id', this.controller.getUsersItems)
+        router.get('/jwtTest', this.auth,this.controller.tokenTest)
         
         return router
     }

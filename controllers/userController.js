@@ -1,4 +1,6 @@
 const BaseController = require("./baseController");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 class UserController extends BaseController {
   constructor({ users, db }) {
@@ -28,12 +30,65 @@ class UserController extends BaseController {
         .json({ success: false, msg: "missing information" });
     }
     try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      console.log("hashed Password:", hashedPassword);
+
       const newUser = await this.model.create({
         email,
-        password,
+        password: hashedPassword,
         name,
       });
-      return res.json({ success: true, user: newUser });
+
+      const payload = {
+        id: newUser.id,
+        email: newUser.email,
+      };
+
+      const token = jwt.sign(payload, "mySuperDuperSecret", {expiresIn:'1hour'});
+
+      // basic Auth
+      // return res.json({ success: true, user: newUser });
+
+      // JWT auth
+      return res.json({ success: true, token });
+    } catch (err) {
+      return res.status(400).json({ success: false, msg: err });
+    }
+  };
+
+  signin = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(401)
+        .json({ success: false, msg: "missing information" });
+    }
+    try {
+      const user = await this.model.findOne({ where: { email } });
+      if (!user) {
+        return res
+          .status(403)
+          .json({ success: false, msg: "user does not exist!" });
+      }
+      const compare = await bcrypt.compare(password, user.password);
+      if (!compare) {
+        return res
+          .status(403)
+          .json({ success: false, msg: "Password does not match!" });
+      }
+
+      const payload = {
+        id: user.id,
+        email: user.email,
+      };
+
+      const token = jwt.sign(payload, "mySuperDuperSecret", {expiresIn:'1hour'});
+      // basic Auth
+      //return res.json({ success: true, user })
+
+      // JWT auth
+      return res.json({ success: true, token });
     } catch (err) {
       return res.status(400).json({ success: false, msg: err });
     }
@@ -49,7 +104,7 @@ class UserController extends BaseController {
           model: this.items,
           include: {
             model: this.categories,
-            where: {id: 5}
+            where: { id: 5 },
           },
         },
       });
@@ -82,6 +137,10 @@ class UserController extends BaseController {
   //   const data = await this.pool.query(`SELECT first_name FROM students WHERE id = ${id};`)
   //   return res.json({ success: true, data: data.rows });
   // }
+
+  tokenTest = (req,res) =>{
+    return res.json({success: true, msg: 'valid token'})
+  }
 }
 
 module.exports = UserController;
