@@ -61,6 +61,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req,res)=> res.json({msg: 'Welcome to the FTBC 11 sample express backend'}))
 app.use("/users", userRouter.routes());
 app.use("/items", itemRouter.routes());
 
