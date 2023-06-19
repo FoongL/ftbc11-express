@@ -14,10 +14,6 @@ primary_region = "hkg"
  
 [env]
   PORT = "8080"
-  USER = ${{ secrets.DB_USERNAME }}
-  PASSWORD = ${{ secrets.DB_PASSWORD }}
-  DATABASE = "ftbc11_test"
-  HOST = ${{ secrets.DB_HOST }}
   DIALECT = "postgres"
   NODE_ENV = "production"
 
