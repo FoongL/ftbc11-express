@@ -67,7 +67,7 @@ app.use("/items", itemRouter.routes());
 app.get('/basicTest', basicAuth, (req,res)=> res.json({msg: 'YOU GOT ME!'}))
 app.get('/jwtTest', jwtAuth, (req,res)=> res.json({msg: 'YOU GOT ME!'}))
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 // Start the server
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
