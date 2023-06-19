@@ -1,0 +1,29 @@
+# fly.toml app configuration file generated for cicd-test on 2023-06-19T14:51:52+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "cicd-test"
+primary_region = "hkg"
+
+
+[build]
+ 
+[deploy]
+  release_command = "sh ./release.sh"
+ 
+[env]
+  PORT = "8080"
+  USER = ${{ secrets.DB_USERNAME }}
+  PASSWORD = ${{ secrets.DB_PASSWORD }}
+  DATABASE = "ftbc11_test"
+  HOST = ${{ secrets.DB_HOST }}
+  DIALECT = "postgres"
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
