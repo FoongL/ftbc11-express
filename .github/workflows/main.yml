@@ -27,4 +27,4 @@ jobs:
       # npm ci is a built-in script to install dependencies from package-lock.json
       - run: npm ci
       # Run tests
-      #- run: npm test
+      - run: npm test
