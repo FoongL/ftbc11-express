@@ -3,7 +3,7 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "cicd-test"
+app = "non-botched-test"
 primary_region = "hkg"
 
 
@@ -14,10 +14,7 @@ primary_region = "hkg"
  
 [env]
   PORT = "8080"
-  USERNAME = "postgres"
-  PASSWORD = "6iUK1OPq30UrP2O"
   DATABASE = "ftbc11_test"
-  HOST = "cicd-test-db.internal"
   DIALECT = "postgres"
   NODE_ENV = "production"
 
